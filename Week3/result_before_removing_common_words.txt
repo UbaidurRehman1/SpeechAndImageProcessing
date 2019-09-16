@@ -1,0 +1,4 @@
+Levenshtein distance is 7
+Insertion 6 ['some', 'see', 'if', 'it', 'correctly', 'system']
+Deleteion 4 ['a', 'check', 'what', 'the']
+

@@ -1,0 +1,4 @@
+Levenshtein distance is 5
+Insertion 5 ['see', 'if', 'it', 'correctly', 'system']
+Deleteion 2 ['check', 'what']
+

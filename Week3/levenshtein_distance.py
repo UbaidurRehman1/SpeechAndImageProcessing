@@ -3,24 +3,16 @@ import sys
 
 
 def levenshtein_distance(ref, hyp):
-    """ levenshtein_ratio_and_distance:
-        Calculates levenshtein distance between two strings.
-        If ratio_calc = True, the function computes the
-        levenshtein distance ratio of similarity between two strings
-        For all i and j, distance[i,j] will contain the Levenshtein
-        distance between the first i characters of s and the
-        first j characters of t
-    """
-    # Initialize matrix of zeros
-    # rows = len(s)+1
-    # cols = len(t)+1
 
+    #splitting to array using space regix
     ref_array = ref.split()
     hyp_array = hyp.split()
 
+    #calculating size
     rows = len(ref_array)
     cols = len(hyp_array)
 
+    # Initialize matrix of zeros
     distance = np.zeros((rows,cols),dtype = int)
 
     # Populate matrix of zeros with the indeces of each character of both strings
@@ -35,8 +27,6 @@ def levenshtein_distance(ref, hyp):
             if ref_array[row-1] == hyp_array[col-1]:
                 cost = 0 # If the characters are the same in the two strings in a given position [i,j] then the cost is 0
             else:
-                # In order to align the results with those of the Python Levenshtein package, if we choose to calculate the ratio
-                # the cost of a substitution is 2. If we calculate just distance, then the cost of a substitution is 1.
                 cost = 1
             distance[row][col] = min(distance[row-1][col] + 1,      # Cost of deletions
                                  distance[row][col-1] + 1,          # Cost of insertions
@@ -44,6 +34,7 @@ def levenshtein_distance(ref, hyp):
     return distance[row][col]
 
 
+#this method return the list of deleted words in the hypothesis string
 def deletion(ref, hyp):
     ref_array = ref.split()
     hyp_array = hyp.split()
@@ -57,6 +48,7 @@ def deletion(ref, hyp):
     return deleted
 
 
+#this method return list of inserted words in hypothesis string
 def insertion(ref, hyp):
     ref_array = ref.split()
     hyp_array = hyp.split()
@@ -69,7 +61,7 @@ def insertion(ref, hyp):
     return inserted
 
 
-
+#removing common words and return tuple of string having no common words
 def remove_common_words(ref, hyp):
     common_array = ['the', 'of', 'and', 'a', 'be', 'this', 'there', 'an', 'been', 'some']
     
@@ -84,14 +76,10 @@ def remove_common_words(ref, hyp):
         if hyp_string in common_array:
             hyp_array.remove(hyp_string)
 
-
-
     return " ".join(ref_array), " ".join(hyp_array)
 
 
 def main():
-    # ref = "this is some text and we would like to see if it has been identified correctly by speech recognition system"
-    # hyp = "this is a text and we would like to check what has been identified by the speech recognition"
 
     #getting args
     ref_file_path = sys.argv[1]
@@ -105,10 +93,12 @@ def main():
     ref = ref_file.read()
     hyp = hyp_file.read()
 
+    #getting distance, list of deleted words, and list of inserted words
     distance = levenshtein_distance(ref, hyp)
     deleted = deletion(ref, hyp)
     inserted = insertion(ref, hyp)
 
+    #writing informations
     first_info = ""
     first_info += "Levenshtein distance is "
     first_info += str(distance) + "\n\r"
@@ -116,20 +106,30 @@ def main():
     first_info += "Insertion " + str(len(inserted)) + " " + str(inserted) + "\n\r"
     first_info += "Deleteion " + str(len(deleted)) + " " + str(deleted) + "\n\r"
 
+    result_before_removing_common_words = open("result_before_removing_common_words.txt", 'a')
+    result_before_removing_common_words.write(first_info)
+
     print(first_info)
     print("-----------------------After removing common words--------------------------------------")
+
     #removing common words
     ref, hyp = remove_common_words(ref, hyp)
 
+    #again calculating distances, list of deleted words and list of inserted words
     distance = levenshtein_distance(ref, hyp)
     deleted = deletion(ref, hyp)
     inserted = insertion(ref, hyp)
 
+    #writing informations
     second_info = ""
     second_info += "Levenshtein distance is "
     second_info += str(distance) + "\n\r"
     second_info += "Insertion " + str(len(inserted)) + " " + str(inserted) + "\n\r"
     second_info += "Deleteion " + str(len(deleted)) + " " + str(deleted) + "\n\r"
+
+    result_after_removing_common_words = open("result_after_removing_common_words.txt", 'a')
+    result_after_removing_common_words.write(second_info)
+
 
     print(second_info)
 
