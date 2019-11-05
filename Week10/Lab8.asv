@@ -1,0 +1,16 @@
+%part a
+%I have created image in paint (add 7 disconnected objects
+
+%read image
+im = imread('blob.bmp');
+subplot(2, 2, 1);
+imshow(im);
+
+%converting image 
+double_im = im2double(im);
+whos double_im
+final_img = imcomplement(double_im);
+[L, n] = bwlabel(final_img, 4);
+resultant_img = label2rgb(L, 'hsv', 'k', 'shuffle');
+subplot(2, 2, 2);
+imshow(resultant_img);
